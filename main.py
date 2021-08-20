@@ -1,4 +1,5 @@
 import pygame 
+import sys
 from pygame.locals import *
 import random
 
@@ -11,6 +12,7 @@ screen_height = 600
 #create game window
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Snake')
+my_font = pygame.font.SysFont('monospace', 12, bold=False, italic=False)
 
 #gamevariables
 #cell size in pixels for snake
@@ -21,6 +23,7 @@ update_snake = 0
 food = [0,0]
 new_food = True
 new_piece = [0,0]
+score = 0
 
 #creating the snake, x and y coordinates
 snake_pos = [[int(screen_width/2),int(screen_height/2)]]
@@ -62,13 +65,31 @@ while run:
     #generate food 
     if new_food == True:
         new_food = False
-        food[0] = cell_size * random.randint(0,(screen_width/cell_size) -1)
-        food[1] = cell_size * random.randint(0,(screen_height/cell_size) -1)
+        food[0] = cell_size * random.randint(0,(screen_width/cell_size) -2)
+        food[1] = cell_size * random.randint(0,(screen_height/cell_size) -2)
 
     #drawfood
     pygame.draw.rect(screen,food_color,(food[0],food[1],cell_size,cell_size))
 
 
+    #snake head and food collision
+    if snake_pos[0] == food:
+        new_food = True
+        #new snake segment postioned at the end of snake
+        new_piece = list(snake_pos[-1])
+        if direction == 1:
+            new_piece[1] += cell_size
+        if direction == 3:
+            new_piece[1]  -= cell_size
+        if direction == 2:
+            new_piece[0] -= cell_size
+        if direction == 4:
+            new_piece[0]  += cell_size
+        snake_pos.append(new_piece)
+        score +=1
+
+
+    #snake movement
     if update_snake > 99:
         update_snake = 0
         snake_pos = snake_pos[-1:] + snake_pos[:-1]
