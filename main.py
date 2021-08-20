@@ -11,11 +11,12 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Snake')
 
+#gamevariables
 #cell size in pixels for snake
 cell_size = 10
-
 #directions 1 is up, 2 is right, 3 is down, 4 is left
 direction = 1
+update_snake = 0
 
 #creating the snake, x and y coordinates
 snake_pos = [[int(screen_width/2),int(screen_height/2)]]
@@ -47,18 +48,32 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and direction != 3:
                 direction = 1 
-            if event.key == pygame.K_DOWN and direction != 1:
-                direction = 3
             if event.key == pygame.K_RIGHT and direction != 4:
                 direction = 2
+            if event.key == pygame.K_DOWN and direction != 1:
+                direction = 3
             if event.key == pygame.K_LEFT and direction != 2:
                 direction = 4  
 
+    if update_snake > 99:
+        update_snake = 0
+        snake_pos = snake_pos[-1:] + snake_pos[:-1]
+        if direction == 1:
+            snake_pos[0][0] = snake_pos[1][0]
+            snake_pos[0][1] = snake_pos[1][1] - cell_size
 
-    snake_pos = snake_pos[-1:] + snake_pos[:-1]
-    if direction == 1:
-        snake_pos[0][0] = snake_pos[1][0]
-        snake_pos[0][1] = snake_pos[1][1] - cell_size
+        if direction == 3:
+            snake_pos[0][0] = snake_pos[1][0]
+            snake_pos[0][1] = snake_pos[1][1] + cell_size
+
+        if direction == 2:
+            snake_pos[0][1] = snake_pos[1][1]
+            snake_pos[0][0] = snake_pos[1][0] + cell_size
+
+        if direction == 4:
+            snake_pos[0][1] = snake_pos[1][1]
+            snake_pos[0][0] = snake_pos[1][0] - cell_size
+    
     #drawing snake
     head=1
     for x in snake_pos: 
@@ -71,6 +86,7 @@ while run:
             head = 0
 
     pygame.display.update()
+    update_snake +=1
 
 #end game 
 pygame.quit()
