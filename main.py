@@ -14,6 +14,9 @@ pygame.display.set_caption('Snake')
 #cell size in pixels for snake
 cell_size = 10
 
+#directions 1 is up, 2 is right, 3 is down, 4 is left
+direction = 1
+
 #creating the snake, x and y coordinates
 snake_pos = [[int(screen_width/2),int(screen_height/2)]]
 #adding segments to the snake
@@ -37,11 +40,25 @@ run = True
 while run:
     #set background color in game
     draw_screen()
-    
+    #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and direction != 3:
+                direction = 1 
+            if event.key == pygame.K_DOWN and direction != 1:
+                direction = 3
+            if event.key == pygame.K_RIGHT and direction != 4:
+                direction = 2
+            if event.key == pygame.K_LEFT and direction != 2:
+                direction = 4  
 
+
+    snake_pos = snake_pos[-1:] + snake_pos[:-1]
+    if direction == 1:
+        snake_pos[0][0] = snake_pos[1][0]
+        snake_pos[0][1] = snake_pos[1][1] - cell_size
     #drawing snake
     head=1
     for x in snake_pos: 
