@@ -24,6 +24,8 @@ food = [0,0]
 new_food = True
 new_piece = [0,0]
 score = 0
+game_over = False
+clicked = False
 
 
 #creating the snake, x and y coordinates
@@ -43,6 +45,7 @@ head_color = (255,0,0) #red
 score_color = (51,153,255)
 font = pygame.font.SysFont(None, 40, bold=False, italic=False)
 
+play_again_rect = Rect(220,280,160,50)
 
 #functions
 def draw_screen():
@@ -53,16 +56,28 @@ def draw_score():
     score_img = font.render(score_txt,True,score_color)
     screen.blit(score_img,(250,0))
   
-def game_over():
+def check_game_over(game_over):
     #snake has eaten itself
     snake_head = 0
-    for segment in snake_pos and snake_head > 0:
-        if snake_pos[0] == segment:
+    for segment in snake_pos:
+        if snake_pos[0] == segment and snake_head > 0:
             game_over = True
         snake_head +=1
     #snake has hit sides
     if snake_pos[0][0] <0 or snake_pos[0][0] > screen_width or snake_pos[0][1] < 0 or snake_pos[0][1] > screen_height:
         game_over = True 
+    return game_over
+
+def draw_game_over():
+    game_over_text = 'Game Over!'
+    game_over_img = font.render(game_over_text,True,score_color)
+    screen.blit(game_over_img,(220,250))
+
+    play_again = 'Play Again?'
+    play_again_img = font.render(play_again,True,head_color)
+    pygame.draw.rect(screen,score_color,play_again_rect)
+    screen.blit(play_again_img,(220,290))
+
 
 #start game loop
 run = True
@@ -70,7 +85,6 @@ while run:
     #set background color in game
     draw_screen()
     draw_score()
-    game_over()
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -111,26 +125,39 @@ while run:
         score +=1
 
 
-    #snake movement
-    if update_snake > 99:
-        update_snake = 0
-        snake_pos = snake_pos[-1:] + snake_pos[:-1]
-        if direction == 1:
-            snake_pos[0][0] = snake_pos[1][0]
-            snake_pos[0][1] = snake_pos[1][1] - cell_size
+    #snake movement and game over
+    if game_over == False:
+        if update_snake > 99:
+            update_snake = 0
+            snake_pos = snake_pos[-1:] + snake_pos[:-1]
+            if direction == 1:
+                snake_pos[0][0] = snake_pos[1][0]
+                snake_pos[0][1] = snake_pos[1][1] - cell_size
 
-        if direction == 3:
-            snake_pos[0][0] = snake_pos[1][0]
-            snake_pos[0][1] = snake_pos[1][1] + cell_size
+            if direction == 3:
+                snake_pos[0][0] = snake_pos[1][0]
+                snake_pos[0][1] = snake_pos[1][1] + cell_size
 
-        if direction == 2:
-            snake_pos[0][1] = snake_pos[1][1]
-            snake_pos[0][0] = snake_pos[1][0] + cell_size
+            if direction == 2:
+                snake_pos[0][1] = snake_pos[1][1]
+                snake_pos[0][0] = snake_pos[1][0] + cell_size
 
-        if direction == 4:
-            snake_pos[0][1] = snake_pos[1][1]
-            snake_pos[0][0] = snake_pos[1][0] - cell_size
-    
+            if direction == 4:
+                snake_pos[0][1] = snake_pos[1][1]
+                snake_pos[0][0] = snake_pos[1][0] - cell_size
+            game_over = check_game_over(game_over)
+    else:
+        draw_game_over()
+        if event.type == pygame.MOUSEBUTTONDOWN and clicked == False:
+            clicked = True
+        if event.type == pygame.MOUSEBUTTONUP and clicked == True:
+            clicked = False
+            pos = pygame.mouse.get_pos()
+            if play_again_rect == pos:
+                
+
+
+
     #drawing snake
     head=1
     for x in snake_pos: 
