@@ -25,6 +25,7 @@ new_food = True
 new_piece = [0,0]
 score = 0
 
+
 #creating the snake, x and y coordinates
 snake_pos = [[int(screen_width/2),int(screen_height/2)]]
 #adding segments to the snake
@@ -32,22 +33,44 @@ snake_pos.append([300,310])
 snake_pos.append([300,320])
 snake_pos.append([300,330])
 
-#define a background image or color
+#define a background image, color or text
 bg = (46,198,209)
 food_color = (252,186,3)
 #snake body color
 body_inner = (50,175,25)
 body_outer = (100,100,100)
 head_color = (255,0,0) #red
+score_color = (51,153,255)
+font = pygame.font.SysFont(None, 40, bold=False, italic=False)
 
+
+#functions
 def draw_screen():
     screen.fill(bg)
+
+def draw_score():
+    score_txt = 'Score: ' + str(score)
+    score_img = font.render(score_txt,True,score_color)
+    screen.blit(score_img,(250,0))
+  
+def game_over():
+    #snake has eaten itself
+    snake_head = 0
+    for segment in snake_pos and snake_head > 0:
+        if snake_pos[0] == segment:
+            game_over = True
+        snake_head +=1
+    #snake has hit sides
+    if snake_pos[0][0] <0 or snake_pos[0][0] > screen_width or snake_pos[0][1] < 0 or snake_pos[0][1] > screen_height:
+        game_over = True 
 
 #start game loop
 run = True
 while run:
     #set background color in game
     draw_screen()
+    draw_score()
+    game_over()
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -70,7 +93,6 @@ while run:
 
     #drawfood
     pygame.draw.rect(screen,food_color,(food[0],food[1],cell_size,cell_size))
-
 
     #snake head and food collision
     if snake_pos[0] == food:
