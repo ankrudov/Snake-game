@@ -17,8 +17,7 @@ my_font = pygame.font.SysFont('monospace', 12, bold=False, italic=False)
 #gamevariables
 #cell size in pixels for snake
 cell_size = 10
-#directions 1 is up, 2 is right, 3 is down, 4 is left
-direction = 1
+direction = 1 #directions 1 is up, 2 is right, 3 is down, 4 is left
 update_snake = 0
 food = [0,0]
 new_food = True
@@ -153,8 +152,21 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP and clicked == True:
             clicked = False
             pos = pygame.mouse.get_pos()
-            if play_again_rect == pos:
-                
+            if play_again_rect.collidepoint(pos):
+                cell_size = 10
+                direction = 1 
+                update_snake = 0
+                food = [0,0]
+                new_food = True
+                new_piece = [0,0]
+                score = 0
+                game_over = False
+                snake_pos = [[int(screen_width/2),int(screen_height/2)]]
+                snake_pos.append([300,310])
+                snake_pos.append([300,320])
+                snake_pos.append([300,330])
+
+
 
 
 
